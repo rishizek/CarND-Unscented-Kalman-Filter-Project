@@ -441,8 +441,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   VectorXd z_diff = meas_package.raw_measurements_ - z_pred;
   
   //angle normalization
-  while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-  while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+  while (z_diff(1) >  M_PI) z_diff(1) -= 2.*M_PI;
+  while (z_diff(1) < -M_PI) z_diff(1) += 2.*M_PI;
   
   //update state mean and covariance matrix
   x_ += K * z_diff;
