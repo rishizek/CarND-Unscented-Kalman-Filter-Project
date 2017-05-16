@@ -25,10 +25,10 @@ UKF::UKF() {
   P_ = MatrixXd(5, 5);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 1; //30
+  std_a_ = 2; //30
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 1; //30
+  std_yawdd_ = 1.5; //30
 
   // Laser measurement noise standard deviation position1 in m
   std_laspx_ = 0.15;
@@ -58,7 +58,6 @@ UKF::UKF() {
         0, 0, 1, 0, 0,
         0, 0, 0, 1, 0,
         0, 0, 0, 0, 1;
-  //create matrix with predicted sigma points as columns
   time_us_ = 0;
   n_x_ = 5;  //set state dimension
   n_aug_ = 7;  //set augmented dimension
@@ -93,6 +92,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       //float ro_dot = meas_package.raw_measurements_(2);
       x_(0) = ro*cos(phi);
       x_(1) = ro*sin(phi);
+      P_(0,0) = std_radr_;  // used radar distance uncertainty r as initial px covariance uncertainty
+      P_(1,1) = std_radr_;  // used radar distance uncertainty r as initial px covariance uncertainty
     } else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
       /**
        Initialize state.
@@ -101,6 +102,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       float py = meas_package.raw_measurements_(1);
       x_(0) = px;
       x_(1) = py;
+      P_(0,0) = std_laspx_;  // used lidar distance uncertainty px as initial px covariance uncertainty
+      P_(1,1) = std_laspy_;  // used lidar distance uncertainty py as initial py covariance uncertainty
     }
     
     time_us_ = meas_package.timestamp_;
